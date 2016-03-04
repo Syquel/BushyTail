@@ -2,10 +2,18 @@
 
 [![Build Status](https://travis-ci.org/Syquel/BushyTail.svg?branch=release%2Fv1.0)](https://travis-ci.org/Syquel/BushyTail)
 
+## Overview
+
+BushyTail is a Java 6-compatible facade for [Olingo](https://olingo.apache.org/) which provides functionality for accessing JPA entities.
+
 ## Development
 
 - Java 6 compatible (hey SAP folks!)
 - Naming convention for packages: singular
+
+## Dependencies
+
+- [Olingo](https://olingo.apache.org/doc/odata4/dependencies.html), Version 4
 
 ## License
 
