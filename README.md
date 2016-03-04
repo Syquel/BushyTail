@@ -14,6 +14,7 @@ BushyTail is a Java 6-compatible facade for [Olingo](https://olingo.apache.org/)
 ## Dependencies
 
 - [Olingo](https://olingo.apache.org/doc/odata4/dependencies.html), Version 4
+- [JUnit](http://junit.org/), Version 4
 
 ## License
 
