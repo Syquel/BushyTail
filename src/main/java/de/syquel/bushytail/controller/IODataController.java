@@ -22,7 +22,7 @@ package de.syquel.bushytail.controller;
  * @author Clemens Bartz
  * @since 1.0
  *
- * @param <T></T> Entity which is handled by the controller.
+ * @param <T> Entity which is handled by the controller.
  */
 public interface IODataController<T> {
 }
