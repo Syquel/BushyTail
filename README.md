@@ -1,6 +1,7 @@
 # BushyTail
 
 [![Build Status](https://travis-ci.org/Syquel/BushyTail.svg?branch=release%2Fv1.0)](https://travis-ci.org/Syquel/BushyTail)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/388346a6fc6c4d4f943cef0fc7645929)](https://www.codacy.com/app/frederik-boster/BushyTail)
 
 ## Overview
 
