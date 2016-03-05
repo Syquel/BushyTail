@@ -24,5 +24,5 @@ package de.syquel.bushytail.controller;
  *
  * @param <T> Entity which is handled by the controller.
  */
-public interface IODataController<T> {
+public interface IBushyTailController<T> {
 }
