@@ -16,6 +16,18 @@
 
 package de.syquel.bushytail;
 
+import de.syquel.bushytail.service.BushyTailEdmProvider;
+import org.apache.olingo.server.api.OData;
+import org.apache.olingo.server.api.ODataHttpHandler;
+import org.apache.olingo.server.api.ServiceMetadata;
+import org.apache.olingo.server.api.edmx.EdmxReference;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * The BushyTail class should be used by the developer.
  * <p/>
@@ -25,4 +37,24 @@ package de.syquel.bushytail;
  * @since 1.0
  */
 public class BushyTail {
+
+    /**
+     * Serve a request from a Servlet.
+     *
+     * @param req the request
+     * @param resp the response which will be modified
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            final OData oData = OData.newInstance();
+            final ServiceMetadata edm = oData.createServiceMetadata(new BushyTailEdmProvider(), new ArrayList<EdmxReference>(0));
+
+            final ODataHttpHandler handler = oData.createHandler(edm);
+            handler.process(req, resp);
+        } catch (final RuntimeException e) {
+            throw new ServletException(e);
+        }
+    }
 }
