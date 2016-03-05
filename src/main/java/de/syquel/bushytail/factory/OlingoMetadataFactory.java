@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author Frederik Boster
  */
-public class BushyTailMetadataFactory {
+public class OlingoMetadataFactory {
 
 
     /**
@@ -54,9 +54,9 @@ public class BushyTailMetadataFactory {
 
 
     /**
-     * Constructs {@link BushyTailMetadataFactory}.
+     * Constructs {@link OlingoMetadataFactory}.
      */
-    public BushyTailMetadataFactory() {
+    public OlingoMetadataFactory() {
 
     }
 
