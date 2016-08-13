@@ -16,13 +16,21 @@
 
 package de.syquel.bushytail.controller;
 
+import org.apache.olingo.server.api.uri.UriParameter;
+
+import java.util.List;
+
 /**
  * Interface for all ODataControllers. Provides CRUD Operations.
  *
  * @author Clemens Bartz
+ * @author Frederik Boster
  * @since 1.0
  *
  * @param <T> Entity which is handled by the controller.
  */
 public interface IBushyTailController<T> {
+
+    public T read(List<UriParameter> keyPredicates);
+
 }
