@@ -26,7 +26,9 @@
         <olingo.version>[4.0.0,5)</olingo.version>
         <jpa.version>[1.0.2,1.1]</jpa.version>
         <junit.version>[4,5)</junit.version>
-        <javaee.version>[6.0,7)</javaee.version>
+        <javaee.version>6.0</javaee.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <commons-beanutils.version>1.9.2</commons-beanutils.version>
     </properties>
 
     <groupId>de.syquel</groupId>
@@ -39,7 +41,7 @@
         <developer>
             <name>Frederik Boster</name>
             <email>frederik.boster@syquel-systems.de</email>
-            <url>http://www.syquel-systems.de</url>
+            <url>https://www.syquel-systems.de</url>
         </developer>
         <developer>
             <name>Clemens Bartz</name>
@@ -106,6 +108,17 @@
             <artifactId>javaee-api</artifactId>
             <version>${javaee.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
         </dependency>
 
         <dependency>
