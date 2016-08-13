@@ -16,6 +16,7 @@
 
 package de.syquel.bushytail.factory;
 
+import org.apache.commons.lang.ClassUtils;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.*;
@@ -48,9 +49,9 @@ public class OlingoMetadataFactory {
     }
 
     /**
-     * Contains all JPA {@link Entity} with their respective namespace.
+     * Contains all JPA {@link Entity} within their respective namespace.
      */
-    private final Map<String, Set<Class<?>>> namespaceEntities = new HashMap<String, Set<Class<?>>>();
+    private final Map<String, Map<Class<?>, FullQualifiedName>> namespaceEntities = new HashMap<String, Map<Class<?>, FullQualifiedName>>();
 
 
     /**
@@ -64,36 +65,46 @@ public class OlingoMetadataFactory {
      * Adds a JPA {@link Entity} with their namespace to the factory context and
      * queues it for further processing.
      *
-     * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
-     * @param namespace The namespace of the JPA {@link Entity} (e.g. the database schema name).
+     * @param types A collection of JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
      */
-    public void addEntity(final Class<?> type, final String namespace) {
-        Set<Class<?>> entities = namespaceEntities.get(namespace);
-        if (entities == null) {
-            entities = new HashSet<Class<?>>();
-            namespaceEntities.put(namespace, entities);
+    public void addEntity(final Iterable<Class<?>> types) {
+        for (final Class<?> type : types) {
+            addEntity(type);
         }
-
-        entities.add(type);
     }
 
     /**
      * Adds a JPA {@link Entity} with their namespace to the factory context and
      * queues it for further processing.
+     * The namespace and name of the entity are automatically calculated.
      *
-     * @param types A collection of JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
-     * @param namespace The namespace of the JPA {@link Entity}.
+     * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
      */
-    public void addEntity(final Iterable<Class<?>> types, final String namespace) {
-        Set<Class<?>> entities = namespaceEntities.get(namespace);
+    public void addEntity(final Class<?> type) {
+        String namespace = ClassUtils.getPackageName(type);
+        String entityName = type.getSimpleName();
+
+        FullQualifiedName entityFQN = new FullQualifiedName(namespace, entityName);
+
+        addEntity(entityFQN, type);
+    }
+
+
+    /**
+     * Adds a JPA {@link Entity} with their namespace to the factory context and
+     * queues it for further processing.
+     *
+     * @param entityFQN The Full Qualified Name of the OData entity.
+     * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     */
+    public void addEntity(final FullQualifiedName entityFQN, final Class<?> type) {
+        Map<Class<?>, FullQualifiedName> entities = namespaceEntities.get(entityFQN.getNamespace());
         if (entities == null) {
-            entities = new HashSet<Class<?>>();
-            namespaceEntities.put(namespace, entities);
+            entities = new HashMap<Class<?>, FullQualifiedName>();
+            namespaceEntities.put(entityFQN.getNamespace(), entities);
         }
 
-        for (final Class<?> type : types) {
-            entities.add(type);
-        }
+        entities.put(type, entityFQN);
     }
 
     /**
@@ -102,21 +113,25 @@ public class OlingoMetadataFactory {
      * @param name The name of the schema.
      * @return The List of OData {@link CsdlSchema} which were generated out of the queued JPA {@link Entity}.
      *
-     * @see #addEntity(Class, String)
-     * @see #addEntity(Iterable, String)
+     * @see #addEntity(Class)
+     * @see #addEntity(Iterable)
      */
     public List<CsdlSchema> createSchema(final String name) {
         final List<CsdlSchema> schemas = new ArrayList<CsdlSchema>(namespaceEntities.size());
 
         // Loop through all Namespaces which were set
-        for (final Map.Entry<String, Set<Class<?>>> namespaceEntityEntry : namespaceEntities.entrySet()) {
+        for (final Map.Entry<String, Map<Class<?>, FullQualifiedName>> namespaceEntityEntry : namespaceEntities.entrySet()) {
             final String namespace = namespaceEntityEntry.getKey();
+            final Map<Class<?>, FullQualifiedName> namespaceEntityMap = namespaceEntityEntry.getValue();
 
             // Loop through all JPA Entites which were set and create EntityTypes and EntitySets
             final List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
             final List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
-            for (final Class<?> entity : namespaceEntityEntry.getValue()){
-                final ODataEntityPair entityPair = createEntity(entity, namespace);
+            for (final Map.Entry<Class<?>, FullQualifiedName> entityEntry : namespaceEntityMap.entrySet()){
+                final FullQualifiedName entityFQN = entityEntry.getValue();
+                final Class<?> entity = entityEntry.getKey();
+
+                final ODataEntityPair entityPair = createEntity(entity, entityFQN);
 
                 entityTypes.add(entityPair.getEntityType());
                 entitySets.add(entityPair.getEntitySet());
@@ -143,10 +158,10 @@ public class OlingoMetadataFactory {
      * Creates OData {@link CsdlEntityType} and {@link CsdlEntitySet} out of a JPA {@link Entity}.
      *
      * @param type The JPA {@link Entity}.
-     * @param namespace The namespace of the OData {@link CsdlEntitySet}.
+     * @param entityFQN The Full Qualified Name of the OData {@link CsdlEntitySet}.
      * @return The pair of generated OData {@link CsdlEntityType} and {@link CsdlEntitySet}.
      */
-    private ODataEntityPair createEntity(final Class<?> type, final String namespace) {
+    private ODataEntityPair createEntity(final Class<?> type, final FullQualifiedName entityFQN) {
         final List<CsdlProperty> properties = new ArrayList<CsdlProperty>();
         final List<CsdlPropertyRef> primaryKeyProperties = new ArrayList<CsdlPropertyRef>();
         final List<CsdlNavigationProperty> navigationProperties = new ArrayList<CsdlNavigationProperty>();
@@ -168,7 +183,7 @@ public class OlingoMetadataFactory {
         // Build EntitySet
         final CsdlEntitySet entitySet = new CsdlEntitySet();
         entitySet.setName(getJPAEntityName(type));
-        entitySet.setType(new FullQualifiedName(namespace, type.getSimpleName()));
+        entitySet.setType(entityFQN);
         entitySet.setNavigationPropertyBindings(navigationPropertyBindings);
 
         return new ODataEntityPair(entitySet, entityType);
@@ -279,12 +294,16 @@ public class OlingoMetadataFactory {
 
         if (odataType == null) {
             // Loop through all namespaces to lookup if propertyType is an JPA entity
-            for (final Map.Entry<String, Set<Class<?>>> namespaceEntityMap : namespaceEntities.entrySet()) {
+            for (final Map.Entry<String, Map<Class<?>, FullQualifiedName>> namespaceEntityEntry : namespaceEntities.entrySet()) {
 
-                final String entityNamespace = namespaceEntityMap.getKey();
-                final Set<Class<?>> namespaceEntitySet = namespaceEntityMap.getValue();
-                if (namespaceEntitySet != null && namespaceEntitySet.contains(type)) {
-                    odataType = new FullQualifiedName(entityNamespace, type.getSimpleName());
+                final String entityNamespace = namespaceEntityEntry.getKey();
+                final Map<Class<?>, FullQualifiedName> namespaceEntityMap = namespaceEntityEntry.getValue();
+                if (namespaceEntityMap != null) {
+                    FullQualifiedName entityFQN = namespaceEntityMap.get(type);
+
+                    if (entityFQN != null) {
+                        odataType = entityFQN;
+                    }
 
                     break;
                 }
