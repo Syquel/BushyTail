@@ -96,7 +96,7 @@ public class BushyTailBuilder {
             metadataFactory.addEntity(entityFQN, entityType);
         }
 
-        final List<CsdlSchema> odataSchemas = metadataFactory.createSchema("");
+        final Map<String, CsdlSchema> odataSchemas = metadataFactory.createSchema("");
 
         return new BushyTail(odataSchemas, entityControllerMap, entityTypeMap);
     }

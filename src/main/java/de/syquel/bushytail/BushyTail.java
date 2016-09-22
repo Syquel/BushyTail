@@ -54,7 +54,7 @@ public class BushyTail {
     private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper();
 
     /** The list of schema. */
-    private final List<CsdlSchema> odataSchemas;
+    private final Map<String, CsdlSchema> odataSchemas;
 
     /** The map of classes and controllers. */
     private final Map<Class<?>, IBushyTailController<?>> entityControllerMap;
@@ -62,7 +62,7 @@ public class BushyTail {
     /** The mapp of FQDNs and classes. */
     private final Map<FullQualifiedName, Class<?>> entityTypeMap;
 
-    BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
+    BushyTail(Map<String, CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
         this.odataSchemas = odataSchemas;
         this.entityControllerMap = entityControllerMap;
         this.entityTypeMap = entityTypeMap;

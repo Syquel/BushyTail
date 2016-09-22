@@ -21,6 +21,7 @@ import org.apache.olingo.commons.api.edm.provider.*;
 import org.apache.olingo.commons.api.ex.ODataException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the service metadata, including Entity Data Model (EDM), the entities and their relationships.
@@ -30,9 +31,9 @@ import java.util.List;
  */
 public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
 
-    List<CsdlSchema> odataSchemas;
+    Map<String, CsdlSchema> odataSchemas;
 
-    public BushyTailEdmProvider(List<CsdlSchema> odataSchemas) {
+    public BushyTailEdmProvider(Map<String, CsdlSchema> odataSchemas) {
         this.odataSchemas = odataSchemas;
     }
 
