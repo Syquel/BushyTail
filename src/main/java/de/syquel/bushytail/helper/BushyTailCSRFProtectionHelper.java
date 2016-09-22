@@ -30,9 +30,11 @@ import java.security.SecureRandom;
  */
 public class BushyTailCSRFProtectionHelper {
 
+    /** CSRF attribute name. */
     private static final String BUSHYTAIL_CSRFTOKEN_ATTRIBUTENAME = "BushyTailCsrfToken";
 
-    private SecureRandom secureRandom = new SecureRandom();
+    /** Secure RNG generator. */
+    private final SecureRandom secureRandom = new SecureRandom();
 
     /**
      * Initialize a new BushyTailCSRFProtectionHelper with a new {@link SecureRandom} Random Number Generator.
