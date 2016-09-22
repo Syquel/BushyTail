@@ -33,11 +33,13 @@ import org.apache.olingo.server.api.uri.UriInfo;
  * @since 1.0
  */
 public class BushyTailEntityCollectionProcessor implements EntityCollectionProcessor {
-    public void readEntityCollection(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType) throws ODataApplicationException, ODataLibraryException {
-
-    }
 
     public void init(OData oData, ServiceMetadata serviceMetadata) {
 
     }
+
+    public void readEntityCollection(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType) throws ODataApplicationException, ODataLibraryException {
+
+    }
+
 }
