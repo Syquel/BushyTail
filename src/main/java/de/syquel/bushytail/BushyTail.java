@@ -40,18 +40,27 @@ import java.util.Map;
  * The BushyTail class should be used by the developer.
  * <p/>
  * It converts JPA entities and {@link de.syquel.bushytail.controller.IBushyTailController}s to an Olingo OData Version 4 service.
+ * <p/>
+ * You can create a new instance using {@link BushyTailBuilder}.
  *
  * @author Clemens Bartz
  * @author Frederik Boster
  * @since 1.0
+ * @see BushyTailBuilder
  */
 public class BushyTail {
 
+    /** The helper for CSRF protection. */
     private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper();
 
-    private List<CsdlSchema> odataSchemas;
-    private Map<Class<?>, IBushyTailController<?>> entityControllerMap;
-    private Map<FullQualifiedName, Class<?>> entityTypeMap;
+    /** The list of schema. */
+    private final List<CsdlSchema> odataSchemas;
+
+    /** The map of classes and controllers. */
+    private final Map<Class<?>, IBushyTailController<?>> entityControllerMap;
+
+    /** The mapp of FQDNs and classes. */
+    private final Map<FullQualifiedName, Class<?>> entityTypeMap;
 
     BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
         this.odataSchemas = odataSchemas;
