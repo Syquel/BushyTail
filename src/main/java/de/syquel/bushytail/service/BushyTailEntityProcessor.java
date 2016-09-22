@@ -16,6 +16,15 @@
 
 package de.syquel.bushytail.service;
 
+import de.syquel.bushytail.controller.IBushyTailController;
+import de.syquel.bushytail.serializer.OlingoDeserializer;
+import de.syquel.bushytail.serializer.OlingoSerializer;
+import de.syquel.bushytail.serializer.exception.OlingoDeserializerException;
+import de.syquel.bushytail.service.subprocessor.BushyTailEntitySetSubProcessor;
+import org.apache.olingo.commons.api.data.Entity;
+import org.apache.olingo.commons.api.edm.EdmEntitySet;
+import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.format.ContentType;
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ODataApplicationException;
@@ -23,25 +32,76 @@ import org.apache.olingo.server.api.ODataLibraryException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
+import org.apache.olingo.server.api.deserializer.DeserializerResult;
+import org.apache.olingo.server.api.deserializer.ODataDeserializer;
 import org.apache.olingo.server.api.processor.EntityProcessor;
-import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.*;
+
+import java.beans.Introspector;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Processes CRUD operations on a single Olingo entity.
  *
  * @author Clemens Bartz
+ * @author Frederik Boster
  * @since 1.0
  */
 public class BushyTailEntityProcessor implements EntityProcessor {
-    public void readEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType) throws ODataApplicationException, ODataLibraryException {
-        
+
+    private final Map<FullQualifiedName, Class<?>> entityTypeMap;
+    private final Map<Class<?>, IBushyTailController<?>> entityProcessorMap;
+
+    private final BushyTailEntitySetSubProcessor entitySetSubProcessor;
+
+    private OData oData = null;
+    private ServiceMetadata serviceMetadata = null;
+
+    public BushyTailEntityProcessor(final Map<FullQualifiedName, Class<?>> entityTypeMap, final Map<Class<?>, IBushyTailController<?>> entityProcessorMap) {
+        this.entityTypeMap = entityTypeMap;
+        this.entityProcessorMap = entityProcessorMap;
+
+        entitySetSubProcessor = new BushyTailEntitySetSubProcessor(entityTypeMap, entityProcessorMap);
+    }
+
+    public void init(OData oData, ServiceMetadata serviceMetadata) {
+        this.oData = oData;
+        this.serviceMetadata = serviceMetadata;
+    }
+
+    public void readEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType responseContentType) throws ODataApplicationException, ODataLibraryException {
+        entitySetSubProcessor.read(uriInfo);
     }
 
     public void createEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
-
+        createEntityInternal(oDataRequest, oDataResponse, uriInfo, contentType, contentType1);
     }
 
-    public void updateEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
+    public <T> void createEntityInternal(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType requestContentType, ContentType responseContentType) throws ODataApplicationException, ODataLibraryException {
+        UriResourceEntitySet uriEntitySet = (UriResourceEntitySet) uriInfo.getUriResourceParts().get(0);
+        Class<T> entityClass = (Class<T>) entityTypeMap.get(uriEntitySet.getEntityType().getFullQualifiedName());
+        EdmEntityType edmEntityType = serviceMetadata.getEdm().getEntityType(uriEntitySet.getEntityType().getFullQualifiedName());
+
+        InputStream requestInputStream = oDataRequest.getBody();
+        ODataDeserializer deserializer = this.oData.createDeserializer(requestContentType);
+        DeserializerResult deserializerResult = deserializer.entity(requestInputStream, edmEntityType);
+        Entity olingoEntity = deserializerResult.getEntity();
+
+        T entity = null;
+        try {
+            entity = OlingoDeserializer.deserialize(entityClass, olingoEntity);
+        } catch (OlingoDeserializerException e) {
+            throw new ODataApplicationException("Cannot deserialize Olingo entity '" + olingoEntity.getType() + "'", 500, Locale.ENGLISH, e);
+        }
+
+        IBushyTailController<T> controller = (IBushyTailController<T>) entityProcessorMap.get(entityClass);
+        controller.create(entity);
+    }
+
+    public void updateEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType requestContentType, ContentType responseContentType) throws ODataApplicationException, ODataLibraryException {
 
     }
 
@@ -49,7 +109,4 @@ public class BushyTailEntityProcessor implements EntityProcessor {
 
     }
 
-    public void init(OData oData, ServiceMetadata serviceMetadata) {
-
-    }
 }
