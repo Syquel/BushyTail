@@ -20,6 +20,8 @@ import de.syquel.bushytail.serializer.exception.OlingoDeserializerException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
@@ -30,27 +32,45 @@ import java.lang.reflect.Method;
  * @author Frederik Boster
  * @since 1.0
  */
-public class OlingoDeserializer {
+public final class OlingoDeserializer {
 
+    /** The logger. */
+    private static final Logger logger = LoggerFactory.getLogger(OlingoDeserializer.class);
+
+    /**
+     * Hidden constructor.
+     */
+    private OlingoDeserializer() {
+
+    }
+
+    /**
+     * Convert an {@link Entity Olingo entity} to an {@link T object}.
+     * @param entityClass the class of the object
+     * @param olingoEntity the olingo entity to convert
+     * @param <T> the type of the object
+     * @return the object
+     * @throws OlingoDeserializerException if the class cannot be instantiated or a property cannot be set
+     */
     public static <T> T deserialize(Class<T> entityClass, Entity olingoEntity) throws OlingoDeserializerException {
         T entity;
         try {
             entity = entityClass.newInstance();
         } catch (Exception e) {
+            logger.error("Cannot instantiate entity for class '" + entityClass.getName() + "'", e);
             throw new OlingoDeserializerException("Cannot instantiate entity for class '" + entityClass.getName() + "'", e);
         }
 
-
         for (Property property : olingoEntity.getProperties()) {
             try {
-                Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entity, property.getName()).getWriteMethod();
+                final Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entity, property.getName()).getWriteMethod();
 
                 propertyAccessor.invoke(entity, property);
             } catch (Exception e) {
+                logger.error("Cannot set property '" + property.getName() + "' of class '" + entityClass.getName() + "'", e);
                 throw new OlingoDeserializerException("Cannot set property '" + property.getName() + "' of class '" + entityClass.getName() + "'", e);
             }
         }
-
 
         return entity;
     }
