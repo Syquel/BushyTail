@@ -67,15 +67,18 @@ public class BushyTailEntityProcessor implements EntityProcessor {
         entitySetSubProcessor = new BushyTailEntitySetSubProcessor(entityTypeMap, entityProcessorMap);
     }
 
+    @Override
     public void init(OData oData, ServiceMetadata serviceMetadata) {
         this.oData = oData;
         this.serviceMetadata = serviceMetadata;
     }
 
+    @Override
     public void readEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType responseContentType) throws ODataApplicationException, ODataLibraryException {
         entitySetSubProcessor.read(uriInfo);
     }
 
+    @Override
     public void createEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType contentType, ContentType contentType1) throws ODataApplicationException, ODataLibraryException {
         createEntityInternal(oDataRequest, oDataResponse, uriInfo, contentType, contentType1);
     }
@@ -101,10 +104,12 @@ public class BushyTailEntityProcessor implements EntityProcessor {
         controller.create(entity);
     }
 
+    @Override
     public void updateEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo, ContentType requestContentType, ContentType responseContentType) throws ODataApplicationException, ODataLibraryException {
 
     }
 
+    @Override
     public void deleteEntity(ODataRequest oDataRequest, ODataResponse oDataResponse, UriInfo uriInfo) throws ODataApplicationException, ODataLibraryException {
 
     }
