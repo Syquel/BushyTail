@@ -33,6 +33,6 @@ public interface IBushyTailController<T> {
 
     T read(List<UriParameter> keyPredicates);
 
-    T create(T entity);
+    void create(T entity);
 
 }
