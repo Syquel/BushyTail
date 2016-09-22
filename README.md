@@ -7,6 +7,10 @@
 
 BushyTail is a Java 6-compatible facade for [Olingo](https://olingo.apache.org/) which provides functionality for accessing JPA entities.
 
+## Usage
+
+See a detailed [explanation in this document](docs/USAGE.md).
+
 ## Development
 
 - Java 6 compatible (hey SAP folks!)
