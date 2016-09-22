@@ -31,7 +31,10 @@ import org.apache.olingo.server.api.ServiceMetadata;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The BushyTail class should be used by the developer.

@@ -18,28 +18,20 @@ package de.syquel.bushytail.service;
 
 import de.syquel.bushytail.controller.IBushyTailController;
 import de.syquel.bushytail.serializer.OlingoDeserializer;
-import de.syquel.bushytail.serializer.OlingoSerializer;
 import de.syquel.bushytail.serializer.exception.OlingoDeserializerException;
 import de.syquel.bushytail.service.subprocessor.BushyTailEntitySetSubProcessor;
 import org.apache.olingo.commons.api.data.Entity;
-import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.format.ContentType;
-import org.apache.olingo.server.api.OData;
-import org.apache.olingo.server.api.ODataApplicationException;
-import org.apache.olingo.server.api.ODataLibraryException;
-import org.apache.olingo.server.api.ODataRequest;
-import org.apache.olingo.server.api.ODataResponse;
-import org.apache.olingo.server.api.ServiceMetadata;
+import org.apache.olingo.server.api.*;
 import org.apache.olingo.server.api.deserializer.DeserializerResult;
 import org.apache.olingo.server.api.deserializer.ODataDeserializer;
 import org.apache.olingo.server.api.processor.EntityProcessor;
-import org.apache.olingo.server.api.uri.*;
+import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 
-import java.beans.Introspector;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
