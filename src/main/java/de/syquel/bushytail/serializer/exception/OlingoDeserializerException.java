@@ -20,4 +20,19 @@ import de.syquel.bushytail.exception.BushyTailException;
 
 public class OlingoDeserializerException extends BushyTailException {
 
+    public OlingoDeserializerException() {
+        super();
+    }
+
+    public OlingoDeserializerException(String message) {
+        super(message);
+    }
+
+    public OlingoDeserializerException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public OlingoDeserializerException(Throwable cause) {
+        super(cause);
+    }
 }
