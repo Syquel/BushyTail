@@ -49,7 +49,10 @@ public class BushyTailEntityProcessor implements EntityProcessor {
 
     private final BushyTailEntitySetSubProcessor entitySetSubProcessor;
 
+    /** The odata object. */
     private OData oData = null;
+
+    /** The service metadata. */
     private ServiceMetadata serviceMetadata = null;
 
     public BushyTailEntityProcessor(final Map<FullQualifiedName, Class<?>> entityTypeMap, final Map<Class<?>, IBushyTailController<?>> entityProcessorMap) {
