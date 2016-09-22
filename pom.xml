@@ -27,8 +27,8 @@
         <jpa.version>[1.0.2,1.1]</jpa.version>
         <junit.version>[4,5)</junit.version>
         <javaee.version>6.0</javaee.version>
-        <commons-lang.version>2.6</commons-lang.version>
-        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <commons-lang.version>[3.4,4)</commons-lang.version>
+        <commons-beanutils.version>[1.9.2,2)</commons-beanutils.version>
     </properties>
 
     <groupId>de.syquel</groupId>
@@ -116,8 +116,8 @@
             <version>${commons-beanutils.version}</version>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
             <version>${commons-lang.version}</version>
         </dependency>
 
