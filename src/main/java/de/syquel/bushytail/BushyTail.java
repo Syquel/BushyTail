@@ -35,9 +35,9 @@ import java.util.Map;
 
 /**
  * The BushyTail class should be used by the developer.
- * <p/>
+ * <p></p>
  * It converts JPA entities and {@link de.syquel.bushytail.controller.IBushyTailController}s to an Olingo OData Version 4 service.
- * <p/>
+ * <p></p>
  * You can create a new instance using {@link BushyTailBuilder}.
  *
  * @author Clemens Bartz
