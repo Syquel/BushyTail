@@ -16,11 +16,44 @@
 
 package de.syquel.bushytail.serializer;
 
+import de.syquel.bushytail.serializer.exception.OlingoDeserializerException;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.olingo.commons.api.data.Entity;
+import org.apache.olingo.commons.api.data.Property;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * Converts Olingo entities to Java objects.
  *
  * @author Clemens Bartz
+ * @author Frederik Boster
  * @since 1.0
  */
 public class OlingoDeserializer {
+
+    public static <T> T deserialize(Class<T> entityClass, Entity olingoEntity) throws OlingoDeserializerException {
+        T entity;
+        try {
+            entity = entityClass.newInstance();
+        } catch (Exception e) {
+            throw new OlingoDeserializerException("Cannot instantiate entity for class '" + entityClass.getName() + "'", e);
+        }
+
+
+        for (Property property : olingoEntity.getProperties()) {
+            try {
+                Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entity, property.getName()).getWriteMethod();
+
+                propertyAccessor.invoke(entity, property);
+            } catch (Exception e) {
+                throw new OlingoDeserializerException("Cannot set property '" + property.getName() + "' of class '" + entityClass.getName() + "'", e);
+            }
+        }
+
+
+        return entity;
+    }
+
 }
