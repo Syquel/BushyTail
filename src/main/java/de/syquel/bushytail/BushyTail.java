@@ -17,11 +17,9 @@
 package de.syquel.bushytail;
 
 import de.syquel.bushytail.controller.IBushyTailController;
-import de.syquel.bushytail.factory.OlingoMetadataFactory;
 import de.syquel.bushytail.helper.BushyTailCSRFProtectionHelper;
 import de.syquel.bushytail.service.BushyTailEdmProvider;
 import de.syquel.bushytail.service.BushyTailEntityProcessor;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 import org.apache.olingo.commons.api.edmx.EdmxReference;
@@ -32,8 +30,6 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

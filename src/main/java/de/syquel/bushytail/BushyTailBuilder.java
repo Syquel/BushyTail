@@ -23,7 +23,6 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
