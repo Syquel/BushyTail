@@ -31,7 +31,8 @@ import java.util.List;
  */
 public interface IBushyTailController<T> {
 
-    public T read(List<UriParameter> keyPredicates);
-    public T create(T entity);
+    T read(List<UriParameter> keyPredicates);
+
+    T create(T entity);
 
 }
