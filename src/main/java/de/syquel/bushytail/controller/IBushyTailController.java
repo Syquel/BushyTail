@@ -44,4 +44,8 @@ public interface IBushyTailController<T> {
      */
     void create(T entity);
 
+    void update(T entity);
+
+    void delete(T entity);
+
 }
