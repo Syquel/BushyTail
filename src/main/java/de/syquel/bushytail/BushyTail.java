@@ -53,7 +53,7 @@ public class BushyTail {
     private Map<Class<?>, IBushyTailController<?>> entityControllerMap;
     private Map<FullQualifiedName, Class<?>> entityTypeMap;
 
-    public BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
+    BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
         this.odataSchemas = odataSchemas;
         this.entityControllerMap = entityControllerMap;
         this.entityTypeMap = entityTypeMap;
