@@ -23,6 +23,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,7 +96,7 @@ public class BushyTailBuilder {
             metadataFactory.addEntity(entityFQN, entityType);
         }
 
-        final Map<String, CsdlSchema> odataSchemas = metadataFactory.createSchema("");
+        final List<CsdlSchema> odataSchemas = metadataFactory.createSchema("");
 
         return new BushyTail(odataSchemas, entityControllerMap, entityTypeMap);
     }

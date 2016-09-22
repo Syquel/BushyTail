@@ -30,6 +30,7 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +51,7 @@ public class BushyTail {
     private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper();
 
     /** The list of schema. */
-    private final Map<String, CsdlSchema> odataSchemas;
+    private final List<CsdlSchema> odataSchemas;
 
     /** The map of classes and controllers. */
     private final Map<Class<?>, IBushyTailController<?>> entityControllerMap;
@@ -58,7 +59,7 @@ public class BushyTail {
     /** The mapp of FQDNs and classes. */
     private final Map<FullQualifiedName, Class<?>> entityTypeMap;
 
-    BushyTail(Map<String, CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
+    BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
         this.odataSchemas = odataSchemas;
         this.entityControllerMap = entityControllerMap;
         this.entityTypeMap = entityTypeMap;

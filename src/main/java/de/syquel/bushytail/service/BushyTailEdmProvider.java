@@ -21,6 +21,7 @@ import org.apache.olingo.commons.api.edm.provider.*;
 import org.apache.olingo.commons.api.ex.ODataException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,12 @@ public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
 
     private final Map<String, CsdlSchema> odataSchemas;
 
-    public BushyTailEdmProvider(final Map<String, CsdlSchema> odataSchemas) {
-        this.odataSchemas = odataSchemas;
+    public BushyTailEdmProvider(final List<CsdlSchema> odataSchemas) {
+        this.odataSchemas = new HashMap<String, CsdlSchema>();
+
+        for (CsdlSchema odataSchema : odataSchemas) {
+            this.odataSchemas.put(odataSchema.getNamespace(), odataSchema);
+        }
     }
 
     @Override

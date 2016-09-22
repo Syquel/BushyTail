@@ -125,8 +125,8 @@ public class OlingoMetadataFactory {
      * @see #addEntity(Class)
      * @see #addEntity(Iterable)
      */
-    public Map<String, CsdlSchema> createSchema(final String name) {
-        final Map<String, CsdlSchema> schemas = new HashMap<String, CsdlSchema>(namespaceEntities.size());
+    public List<CsdlSchema> createSchema(final String name) {
+        final List<CsdlSchema> schemas = new ArrayList<CsdlSchema>(namespaceEntities.size());
 
         // Loop through all Namespaces which were set
         for (final Map.Entry<String, Map<Class<?>, FullQualifiedName>> namespaceEntityEntry : namespaceEntities.entrySet()) {
@@ -157,7 +157,7 @@ public class OlingoMetadataFactory {
             schema.setEntityTypes(entityTypes);
             schema.setEntityContainer(entityContainer);
 
-            schemas.put(namespace, schema);
+            schemas.add(schema);
         }
 
         return schemas;
