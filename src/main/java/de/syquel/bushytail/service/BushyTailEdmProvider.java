@@ -20,6 +20,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.*;
 import org.apache.olingo.commons.api.ex.ODataException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,94 +28,150 @@ import java.util.Map;
  * Provides the service metadata, including Entity Data Model (EDM), the entities and their relationships.
  *
  * @author Clemens Bartz
+ * @author Frederik Boster
  * @since 1.0
  */
 public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
 
     private final Map<String, CsdlSchema> odataSchemas;
 
-    public BushyTailEdmProvider(Map<String, CsdlSchema> odataSchemas) {
+    public BushyTailEdmProvider(final Map<String, CsdlSchema> odataSchemas) {
         this.odataSchemas = odataSchemas;
     }
 
     @Override
     public CsdlEnumType getEnumType(FullQualifiedName enumTypeName) throws ODataException {
-        return super.getEnumType(enumTypeName);
+        final CsdlSchema schema = getSchema(enumTypeName.getNamespace());
+
+        return schema.getEnumType(enumTypeName.getName());
     }
 
     @Override
     public CsdlTypeDefinition getTypeDefinition(FullQualifiedName typeDefinitionName) throws ODataException {
-        return super.getTypeDefinition(typeDefinitionName);
+        final CsdlSchema schema = getSchema(typeDefinitionName.getNamespace());
+
+        return schema.getTypeDefinition(typeDefinitionName.getName());
     }
 
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) throws ODataException {
-        return super.getEntityType(entityTypeName);
+        final CsdlSchema schema = getSchema(entityTypeName.getNamespace());
+
+        return schema.getEntityType(entityTypeName.getName());
     }
 
     @Override
     public CsdlComplexType getComplexType(FullQualifiedName complexTypeName) throws ODataException {
-        return super.getComplexType(complexTypeName);
+        final CsdlSchema schema = getSchema(complexTypeName.getNamespace());
+
+        return schema.getComplexType(complexTypeName.getName());
     }
 
     @Override
     public List<CsdlAction> getActions(FullQualifiedName actionName) throws ODataException {
-        return super.getActions(actionName);
+        final CsdlSchema schema = getSchema(actionName.getNamespace());
+
+        return schema.getActions(actionName.getName());
     }
 
     @Override
     public List<CsdlFunction> getFunctions(FullQualifiedName functionName) throws ODataException {
-        return super.getFunctions(functionName);
+        final CsdlSchema schema = getSchema(functionName.getNamespace());
+
+        return schema.getFunctions(functionName.getName());
     }
 
     @Override
     public CsdlTerm getTerm(FullQualifiedName termName) throws ODataException {
-        return super.getTerm(termName);
+        final CsdlSchema schema = getSchema(termName.getNamespace());
+
+        return schema.getTerm(termName.getName());
     }
 
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) throws ODataException {
-        return super.getEntitySet(entityContainer, entitySetName);
+        final CsdlSchema schema = getSchema(entityContainer.getNamespace());
+
+        return schema.getEntityContainer().getEntitySet(entitySetName);
     }
 
     @Override
     public CsdlSingleton getSingleton(FullQualifiedName entityContainer, String singletonName) throws ODataException {
-        return super.getSingleton(entityContainer, singletonName);
+        final CsdlSchema schema = getSchema(entityContainer.getNamespace());
+
+        return schema.getEntityContainer().getSingleton(singletonName);
     }
 
     @Override
     public CsdlActionImport getActionImport(FullQualifiedName entityContainer, String actionImportName) throws ODataException {
-        return super.getActionImport(entityContainer, actionImportName);
+        final CsdlSchema schema = getSchema(entityContainer.getNamespace());
+
+        return schema.getEntityContainer().getActionImport(actionImportName);
     }
 
     @Override
     public CsdlFunctionImport getFunctionImport(FullQualifiedName entityContainer, String functionImportName) throws ODataException {
-        return super.getFunctionImport(entityContainer, functionImportName);
+        final CsdlSchema schema = getSchema(entityContainer.getNamespace());
+
+        return schema.getEntityContainer().getFunctionImport(functionImportName);
     }
 
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) throws ODataException {
-        return super.getEntityContainerInfo(entityContainerName);
+        final CsdlSchema schema = getSchema(entityContainerName.getNamespace());
+        CsdlEntityContainer entityContainer = schema.getEntityContainer();
+
+        if (!entityContainer.getName().equals(entityContainerName.getName())) {
+            return null;
+        }
+
+        final CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
+        entityContainerInfo.setContainerName(new FullQualifiedName(schema.getNamespace(), entityContainer.getName()));
+        entityContainerInfo.setExtendsContainer(entityContainer.getExtendsContainerFQN());
+
+        return entityContainerInfo;
     }
 
     @Override
     public List<CsdlAliasInfo> getAliasInfos() throws ODataException {
-        return super.getAliasInfos();
+        final List<CsdlAliasInfo> aliasInfos = new ArrayList<CsdlAliasInfo>();
+
+        for (CsdlSchema schema : odataSchemas.values()) {
+            final CsdlAliasInfo aliasInfo = new CsdlAliasInfo();
+            aliasInfo.setAlias(schema.getAlias());
+            aliasInfo.setNamespace(schema.getNamespace());
+
+            aliasInfos.add(aliasInfo);
+        }
+
+        return aliasInfos;
     }
 
     @Override
     public List<CsdlSchema> getSchemas() throws ODataException {
-        return super.getSchemas();
+        return new ArrayList<CsdlSchema>(odataSchemas.values());
     }
 
     @Override
     public CsdlEntityContainer getEntityContainer() throws ODataException {
-        return super.getEntityContainer();
+        // TODO
+        return null;
     }
 
     @Override
     public CsdlAnnotations getAnnotationsGroup(FullQualifiedName targetName, String qualifier) throws ODataException {
-        return super.getAnnotationsGroup(targetName, qualifier);
+        final CsdlSchema schema = getSchema(targetName.getNamespace());
+
+        return schema.getAnnotationGroup(targetName.getName(), qualifier);
+    }
+
+    private CsdlSchema getSchema(String namespace) throws ODataException {
+        final CsdlSchema schema = odataSchemas.get(namespace);
+        if (schema == null) {
+            throw new ODataException("No Olingo schema for namespace '" + namespace + "' defined");
+        }
+
+        return schema;
     }
 
 }
