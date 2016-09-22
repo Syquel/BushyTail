@@ -22,6 +22,8 @@ import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntityType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
@@ -32,19 +34,38 @@ import java.lang.reflect.Method;
  * @author Frederik Boster
  * @since 1.0
  */
-public class OlingoSerializer {
+public final class OlingoSerializer {
 
+    /** The logger. */
+    private static final Logger logger = LoggerFactory.getLogger(OlingoSerializer.class);
+
+    /**
+     * Hidden constructor.
+     */
+    private OlingoSerializer() {
+
+    }
+
+    /**
+     * Convert an {@link T object} to an {@link Entity Olingo entity}.
+     * @param entityType the type of the entity
+     * @param entityObject the object to convert
+     * @param <T> the type of the entity
+     * @return an Olingo entity
+     * @throws OlingoSerializerException if the method cannot access a property
+     */
     public static <T> Entity serialize(EdmEntityType entityType, T entityObject) throws OlingoSerializerException {
-        Entity olingoEntity = new Entity();
+        final Entity olingoEntity = new Entity();
         olingoEntity.setType(entityType.getFullQualifiedName().getFullQualifiedNameAsString());
 
         for (String propertyName : entityType.getPropertyNames()) {
             try {
-                Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entityObject, propertyName).getReadMethod();
-                Object value = propertyAccessor.invoke(entityObject);
+                final Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entityObject, propertyName).getReadMethod();
+                final Object value = propertyAccessor.invoke(entityObject);
 
                 olingoEntity.addProperty(new Property(null, propertyName, ValueType.PRIMITIVE, value));
             } catch (Exception e) {
+                logger.error("Cannot access property '" + propertyName + "' of class '" + entityObject.getClass() + "'", e);
                 throw new OlingoSerializerException("Cannot access property '" + propertyName + "' of class '" + entityObject.getClass() + "'", e);
             }
         }
