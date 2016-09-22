@@ -6,8 +6,9 @@ import java.security.PrivilegedActionException;
  * Abstract exception for BushyTail.
  *
  * @author Clemens Bartz
+ * @author Frederik Boster
  */
-public abstract class BushyTailException extends Exception {
+public class BushyTailException extends Exception {
 
     /**
      * Constructs a new exception with <code>null</code> as its detail message.

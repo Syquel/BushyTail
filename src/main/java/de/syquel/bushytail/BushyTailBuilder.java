@@ -17,7 +17,9 @@
 package de.syquel.bushytail;
 
 import de.syquel.bushytail.controller.IBushyTailController;
+import de.syquel.bushytail.exception.BushyTailException;
 import de.syquel.bushytail.factory.OlingoMetadataFactory;
+import de.syquel.bushytail.factory.exception.OlingoMetadataFactoryException;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
@@ -86,7 +88,7 @@ public class BushyTailBuilder {
      *
      * This method makes heavy use of reflection. Thus it is advised to execute this method only once in the lifetime of the application.
      */
-    public BushyTail build() {
+    public BushyTail build() throws BushyTailException {
         final OlingoMetadataFactory metadataFactory = new OlingoMetadataFactory();
 
         for (Map.Entry<FullQualifiedName, Class<?>> entity : entityTypeMap.entrySet()) {
@@ -96,7 +98,12 @@ public class BushyTailBuilder {
             metadataFactory.addEntity(entityFQN, entityType);
         }
 
-        final List<CsdlSchema> odataSchemas = metadataFactory.createSchema("");
+        final List<CsdlSchema> odataSchemas;
+        try {
+            odataSchemas = metadataFactory.createSchema("");
+        } catch (OlingoMetadataFactoryException e) {
+            throw new BushyTailException("Cannot build Olingo metadata", e);
+        }
 
         return new BushyTail(odataSchemas, entityControllerMap, entityTypeMap);
     }
