@@ -41,8 +41,9 @@ public interface IBushyTailController<T> {
     /**
      * Create the entity.
      * @param entity the entity
+     * @return the created entity
      */
-    void create(T entity);
+    T create(T entity);
 
     void update(T entity);
 
