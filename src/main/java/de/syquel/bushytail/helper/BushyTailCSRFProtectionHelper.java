@@ -17,6 +17,7 @@
 package de.syquel.bushytail.helper;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.olingo.commons.api.http.HttpMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,9 @@ import java.security.SecureRandom;
  * @author Frederik Boster
  */
 public class BushyTailCSRFProtectionHelper {
+
+    /** The HTTP header attribute. */
+    private static final String CSRF_TOKEN_HEADER_ATTRIBUTE = "X-CSRF-TOKEN";
 
     /** CSRF attribute name. */
     private static final String BUSHYTAIL_CSRFTOKEN_ATTRIBUTENAME = "BushyTailCsrfToken";
@@ -51,10 +55,10 @@ public class BushyTailCSRFProtectionHelper {
      * @throws BushyTailCSRFProtectionException If the verification of the CSRF token failed.
      */
     public void process(HttpServletRequest request, HttpServletResponse response) throws BushyTailCSRFProtectionException {
-        String httpMethod = request.getMethod();
+        final String httpMethod = request.getMethod();
 
         // Create CSRF token if HTTP method is GET; otherwise verify it.
-        if ("GET".equalsIgnoreCase(httpMethod)) {
+        if (HttpMethod.GET.name().equalsIgnoreCase(httpMethod)) {
             createToken(request, response);
         } else {
             verifyToken(request);
@@ -69,7 +73,7 @@ public class BushyTailCSRFProtectionHelper {
      */
     private void createToken(HttpServletRequest request, HttpServletResponse response) {
         // Only generate new CSRF token if requested by client
-        String csrfHeader = request.getHeader("X-CSRF-TOKEN");
+        String csrfHeader = request.getHeader(CSRF_TOKEN_HEADER_ATTRIBUTE);
         if (!"FETCH".equalsIgnoreCase(csrfHeader)) {
             return;
         }
@@ -84,7 +88,7 @@ public class BushyTailCSRFProtectionHelper {
         session.setAttribute(BUSHYTAIL_CSRFTOKEN_ATTRIBUTENAME, csrfToken);
 
         // Add new CSRF token to HTTP response
-        response.addHeader("X-CSRF-TOKEN", csrfToken);
+        response.addHeader(CSRF_TOKEN_HEADER_ATTRIBUTE, csrfToken);
     }
 
     /**
@@ -94,7 +98,7 @@ public class BushyTailCSRFProtectionHelper {
      * @throws BushyTailCSRFProtectionException If the verification of the CSRF token failed.
      */
     private void verifyToken(HttpServletRequest request) throws BushyTailCSRFProtectionException {
-        String csrfToken = request.getHeader("X-CSRF-TOKEN");
+        String csrfToken = request.getHeader(CSRF_TOKEN_HEADER_ATTRIBUTE);
 
         // Retrieve the valid CSRF token from the HTTP session
         HttpSession session = request.getSession();
@@ -103,7 +107,7 @@ public class BushyTailCSRFProtectionHelper {
         // Check if the valid CSRF token matches the one of the client
         Boolean isValidToken = (cachedCsrfToken != null && cachedCsrfToken.equals(csrfToken));
         if (!isValidToken) {
-            throw new BushyTailCSRFProtectionException("Invalid CSRF Token");
+            throw new BushyTailCSRFProtectionException(CSRF_TOKEN_HEADER_ATTRIBUTE);
         }
     }
 
