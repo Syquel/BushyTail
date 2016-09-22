@@ -45,7 +45,12 @@ public interface IBushyTailController<T> {
      */
     T create(T entity);
 
-    void update(T entity);
+    /**
+     * Update an entity.
+     * @param entity the entity
+     * @return the update entity
+     */
+    T update(T entity);
 
     /**
      * Delete an entity.
