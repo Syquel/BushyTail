@@ -124,6 +124,8 @@ public class BushyTailEntitySetSubProcessor {
                     UriResourceLambdaVariable resourceLambdaVariable = (UriResourceLambdaVariable) uriResource;
                     break;
                 }
+                default:
+                    break;
             }
         }
 
