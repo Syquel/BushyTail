@@ -40,10 +40,13 @@ public class BushyTailCSRFProtectionHelper {
     /** Secure RNG generator. */
     private final SecureRandom secureRandom = new SecureRandom();
 
+    private final Integer randomByteCount;
+
     /**
      * Initialize a new BushyTailCSRFProtectionHelper with a new {@link SecureRandom} Random Number Generator.
      */
-    public BushyTailCSRFProtectionHelper() {
+    public BushyTailCSRFProtectionHelper(final Integer randomByteCount) {
+        this.randomByteCount = randomByteCount;
     }
 
     /**
@@ -79,7 +82,7 @@ public class BushyTailCSRFProtectionHelper {
         }
 
         // Get random bytes and encode in BASE64 format for CSRF token
-        byte[] randomBytes = new byte[24];
+        byte[] randomBytes = new byte[randomByteCount];
         secureRandom.nextBytes(randomBytes);
         String csrfToken = Base64.encodeBase64String(randomBytes);
 
