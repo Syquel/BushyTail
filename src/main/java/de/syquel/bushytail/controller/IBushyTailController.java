@@ -31,8 +31,17 @@ import java.util.List;
  */
 public interface IBushyTailController<T> {
 
+    /**
+     * Read an entity.
+     * @param keyPredicates the search criterias
+     * @return the entity
+     */
     T read(List<UriParameter> keyPredicates);
 
+    /**
+     * Create the entity.
+     * @param entity the entity
+     */
     void create(T entity);
 
 }
