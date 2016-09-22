@@ -40,10 +40,12 @@ public class BushyTailCSRFProtectionHelper {
     /** Secure RNG generator. */
     private final SecureRandom secureRandom = new SecureRandom();
 
+    /** The count of random bytes to use for the CSRF token.  */
     private final Integer randomByteCount;
 
     /**
      * Initialize a new BushyTailCSRFProtectionHelper with a new {@link SecureRandom} Random Number Generator.
+     * @param randomByteCount The count of random bytes to use for the CSRF token
      */
     public BushyTailCSRFProtectionHelper(final Integer randomByteCount) {
         this.randomByteCount = randomByteCount;

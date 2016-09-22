@@ -47,8 +47,11 @@ import java.util.Map;
  */
 public class BushyTail {
 
+    /** The random byte count for the BushyTailCSRFProtectionHelper. */
+    private static Integer RANDOM_BYTE_COUNT = 24;
+
     /** The helper for CSRF protection. */
-    private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper();
+    private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper(RANDOM_BYTE_COUNT);
 
     /** The list of schema. */
     private final List<CsdlSchema> odataSchemas;
