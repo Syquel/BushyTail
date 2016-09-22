@@ -306,7 +306,6 @@ public class OlingoMetadataFactory {
             // Loop through all namespaces to lookup if propertyType is an JPA entity
             for (final Map.Entry<String, Map<Class<?>, FullQualifiedName>> namespaceEntityEntry : namespaceEntities.entrySet()) {
 
-                final String entityNamespace = namespaceEntityEntry.getKey();
                 final Map<Class<?>, FullQualifiedName> namespaceEntityMap = namespaceEntityEntry.getValue();
                 if (namespaceEntityMap != null) {
                     FullQualifiedName entityFQN = namespaceEntityMap.get(type);
