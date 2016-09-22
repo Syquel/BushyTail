@@ -26,10 +26,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Builder for a new {@link BushyTail} instance.
+ *
+ * @author Frederik Boster
+ * @author Clemens Bartz
+ * @since 1.0
+ */
 public class BushyTailBuilder {
 
-    private Map<Class<?>, IBushyTailController<?>> entityControllerMap = new HashMap<Class<?>, IBushyTailController<?>>();
-    private Map<FullQualifiedName, Class<?>> entityTypeMap = new HashMap<FullQualifiedName, Class<?>>();
+    private final Map<Class<?>, IBushyTailController<?>> entityControllerMap = new HashMap<Class<?>, IBushyTailController<?>>();
+    private final Map<FullQualifiedName, Class<?>> entityTypeMap = new HashMap<FullQualifiedName, Class<?>>();
 
     /**
      * Add a JPA entity and associate it with a business controller.
@@ -80,16 +87,16 @@ public class BushyTailBuilder {
      * This method makes heavy use of reflection. Thus it is advised to execute this method only once in the lifetime of the application.
      */
     public BushyTail build() {
-        OlingoMetadataFactory metadataFactory = new OlingoMetadataFactory();
+        final OlingoMetadataFactory metadataFactory = new OlingoMetadataFactory();
 
         for (Map.Entry<FullQualifiedName, Class<?>> entity : entityTypeMap.entrySet()) {
-            FullQualifiedName entityFQN = entity.getKey();
-            Class<?> entityType = entity.getValue();
+            final FullQualifiedName entityFQN = entity.getKey();
+            final Class<?> entityType = entity.getValue();
 
             metadataFactory.addEntity(entityFQN, entityType);
         }
 
-        List<CsdlSchema> odataSchemas = metadataFactory.createSchema("");
+        final List<CsdlSchema> odataSchemas = metadataFactory.createSchema("");
 
         return new BushyTail(odataSchemas, entityControllerMap, entityTypeMap);
     }
