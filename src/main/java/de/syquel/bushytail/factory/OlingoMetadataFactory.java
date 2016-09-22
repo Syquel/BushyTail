@@ -16,6 +16,7 @@
 
 package de.syquel.bushytail.factory;
 
+import de.syquel.bushytail.factory.exception.OlingoMetadataFactoryException;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
@@ -125,7 +126,7 @@ public class OlingoMetadataFactory {
      * @see #addEntity(Class)
      * @see #addEntity(Iterable)
      */
-    public List<CsdlSchema> createSchema(final String name) {
+    public List<CsdlSchema> createSchema(final String name) throws OlingoMetadataFactoryException {
         final List<CsdlSchema> schemas = new ArrayList<CsdlSchema>(namespaceEntities.size());
 
         // Loop through all Namespaces which were set
@@ -170,7 +171,7 @@ public class OlingoMetadataFactory {
      * @param entityFQN The Full Qualified Name of the OData {@link CsdlEntitySet}.
      * @return The pair of generated OData {@link CsdlEntityType} and {@link CsdlEntitySet}.
      */
-    private ODataEntityPair createEntity(final Class<?> type, final FullQualifiedName entityFQN) {
+    private ODataEntityPair createEntity(final Class<?> type, final FullQualifiedName entityFQN) throws OlingoMetadataFactoryException {
         final List<CsdlProperty> properties = new ArrayList<CsdlProperty>();
         final List<CsdlPropertyRef> primaryKeyProperties = new ArrayList<CsdlPropertyRef>();
         final List<CsdlNavigationProperty> navigationProperties = new ArrayList<CsdlNavigationProperty>();
@@ -212,7 +213,7 @@ public class OlingoMetadataFactory {
      *                                   and can be used in {@link CsdlEntitySet#setNavigationPropertyBindings(List)}.
      */
     private void processProperty(final Field typeField, final Collection<CsdlProperty> properties, final Collection<CsdlPropertyRef> primaryKeyProperties,
-                                 final Collection<CsdlNavigationProperty> navigationProperties, final Collection<CsdlNavigationPropertyBinding> navigationPropertyBindings) {
+                                 final Collection<CsdlNavigationProperty> navigationProperties, final Collection<CsdlNavigationPropertyBinding> navigationPropertyBindings) throws OlingoMetadataFactoryException {
         final String propertyName = typeField.getName();
 
         // Determine if field is collection or Enumeration and assign actual type
@@ -228,7 +229,7 @@ public class OlingoMetadataFactory {
             } else if (enumAnnotation.value() == EnumType.STRING) {
                 propertyType = String.class;
             } else {
-                throw new RuntimeException("Could not determine JPA type for class '" + typeField.getType().getName() + "': Not a valid Enumeration!");
+                throw new OlingoMetadataFactoryException("Could not determine JPA type for class '" + typeField.getType().getName() + "': Not a valid Enumeration!");
             }
 
         } else if (Collection.class.isAssignableFrom(typeField.getType())) {
@@ -298,7 +299,7 @@ public class OlingoMetadataFactory {
      *
      * @see #JAVA_TO_ODATA_TYPE_MAP
      */
-    private FullQualifiedName getODataType(final Class<?> type) {
+    private FullQualifiedName getODataType(final Class<?> type) throws OlingoMetadataFactoryException {
         FullQualifiedName odataType = JAVA_TO_ODATA_TYPE_MAP.get(type);
 
         if (odataType == null) {
@@ -319,7 +320,7 @@ public class OlingoMetadataFactory {
             }
 
             if (odataType == null) {
-                throw new RuntimeException("Could not determine OData type for class '" + type.getName() + "'");
+                throw new OlingoMetadataFactoryException("Could not determine OData type for class '" + type.getName() + "'");
             }
         }
 
@@ -332,11 +333,11 @@ public class OlingoMetadataFactory {
      * @param type The JPA {@link Entity}.
      * @return The determined table name.
      */
-    private static String getJPAEntityName(final Class<?> type) {
+    private static String getJPAEntityName(final Class<?> type) throws OlingoMetadataFactoryException {
         // Determine JPA Entity name
         final Table typeTable = type.getAnnotation(Table.class);
         if (typeTable == null || typeTable.name() == null || typeTable.name().isEmpty()) {
-            throw new RuntimeException("Could not determine EntitySet name: @Table annotation is missing! (" + type.getName() + ")");
+            throw new OlingoMetadataFactoryException("Could not determine EntitySet name: @Table annotation is missing! (" + type.getName() + ")");
         }
 
         return typeTable.name();
