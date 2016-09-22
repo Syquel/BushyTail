@@ -16,7 +16,7 @@
 
 package de.syquel.bushytail.factory;
 
-import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang3.ClassUtils;
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.*;
@@ -24,6 +24,9 @@ import org.apache.olingo.commons.api.edm.provider.*;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -40,12 +43,18 @@ public class OlingoMetadataFactory {
     private static final Map<Class<?>, FullQualifiedName> JAVA_TO_ODATA_TYPE_MAP = new HashMap<Class<?>, FullQualifiedName>();
     static {
         JAVA_TO_ODATA_TYPE_MAP.put(String.class, EdmPrimitiveTypeKind.String.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(Short.class, EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Integer.class, EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Long.class, EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(BigInteger.class, EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Date.class, EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(Calendar.class, EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(Timestamp.class, EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(Time.class, EdmPrimitiveTypeKind.Date.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Double.class, EdmPrimitiveTypeKind.Double.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Boolean.class, EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
         JAVA_TO_ODATA_TYPE_MAP.put(Byte.class, EdmPrimitiveTypeKind.Stream.getFullQualifiedName());
+        JAVA_TO_ODATA_TYPE_MAP.put(UUID.class, EdmPrimitiveTypeKind.Guid.getFullQualifiedName());
     }
 
     /**
