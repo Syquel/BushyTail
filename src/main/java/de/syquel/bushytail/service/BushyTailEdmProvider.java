@@ -16,7 +16,11 @@
 
 package de.syquel.bushytail.service;
 
-import org.apache.olingo.commons.api.edm.provider.CsdlAbstractEdmProvider;
+import org.apache.olingo.commons.api.edm.FullQualifiedName;
+import org.apache.olingo.commons.api.edm.provider.*;
+import org.apache.olingo.commons.api.ex.ODataException;
+
+import java.util.List;
 
 /**
  * Provides the service metadata, including Entity Data Model (EDM), the entities and their relationships.
@@ -25,4 +29,91 @@ import org.apache.olingo.commons.api.edm.provider.CsdlAbstractEdmProvider;
  * @since 1.0
  */
 public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
+
+    List<CsdlSchema> odataSchemas;
+
+    public BushyTailEdmProvider(List<CsdlSchema> odataSchemas) {
+        this.odataSchemas = odataSchemas;
+    }
+
+    @Override
+    public CsdlEnumType getEnumType(FullQualifiedName enumTypeName) throws ODataException {
+        return super.getEnumType(enumTypeName);
+    }
+
+    @Override
+    public CsdlTypeDefinition getTypeDefinition(FullQualifiedName typeDefinitionName) throws ODataException {
+        return super.getTypeDefinition(typeDefinitionName);
+    }
+
+    @Override
+    public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) throws ODataException {
+        return super.getEntityType(entityTypeName);
+    }
+
+    @Override
+    public CsdlComplexType getComplexType(FullQualifiedName complexTypeName) throws ODataException {
+        return super.getComplexType(complexTypeName);
+    }
+
+    @Override
+    public List<CsdlAction> getActions(FullQualifiedName actionName) throws ODataException {
+        return super.getActions(actionName);
+    }
+
+    @Override
+    public List<CsdlFunction> getFunctions(FullQualifiedName functionName) throws ODataException {
+        return super.getFunctions(functionName);
+    }
+
+    @Override
+    public CsdlTerm getTerm(FullQualifiedName termName) throws ODataException {
+        return super.getTerm(termName);
+    }
+
+    @Override
+    public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) throws ODataException {
+        return super.getEntitySet(entityContainer, entitySetName);
+    }
+
+    @Override
+    public CsdlSingleton getSingleton(FullQualifiedName entityContainer, String singletonName) throws ODataException {
+        return super.getSingleton(entityContainer, singletonName);
+    }
+
+    @Override
+    public CsdlActionImport getActionImport(FullQualifiedName entityContainer, String actionImportName) throws ODataException {
+        return super.getActionImport(entityContainer, actionImportName);
+    }
+
+    @Override
+    public CsdlFunctionImport getFunctionImport(FullQualifiedName entityContainer, String functionImportName) throws ODataException {
+        return super.getFunctionImport(entityContainer, functionImportName);
+    }
+
+    @Override
+    public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) throws ODataException {
+        return super.getEntityContainerInfo(entityContainerName);
+    }
+
+    @Override
+    public List<CsdlAliasInfo> getAliasInfos() throws ODataException {
+        return super.getAliasInfos();
+    }
+
+    @Override
+    public List<CsdlSchema> getSchemas() throws ODataException {
+        return super.getSchemas();
+    }
+
+    @Override
+    public CsdlEntityContainer getEntityContainer() throws ODataException {
+        return super.getEntityContainer();
+    }
+
+    @Override
+    public CsdlAnnotations getAnnotationsGroup(FullQualifiedName targetName, String qualifier) throws ODataException {
+        return super.getAnnotationsGroup(targetName, qualifier);
+    }
+
 }

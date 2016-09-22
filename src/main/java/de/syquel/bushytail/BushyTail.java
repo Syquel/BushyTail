@@ -78,7 +78,7 @@ public class BushyTail {
         csrfProtectionHelper.process(req, resp);
 
         final OData oData = OData.newInstance();
-        final ServiceMetadata edm = oData.createServiceMetadata(new BushyTailEdmProvider(), new ArrayList<EdmxReference>(0));
+        final ServiceMetadata edm = oData.createServiceMetadata(new BushyTailEdmProvider(odataSchemas), new ArrayList<EdmxReference>(0));
 
         final ODataHttpHandler handler = oData.createHandler(edm);
         handler.register(new BushyTailEntityProcessor(entityTypeMap, entityControllerMap));
