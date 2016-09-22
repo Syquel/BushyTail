@@ -46,9 +46,15 @@ public class BushyTail {
 
     private BushyTailCSRFProtectionHelper csrfProtectionHelper = new BushyTailCSRFProtectionHelper();
 
-    private Map<Class<?>, IBushyTailController<?>> entityControllerMap = new HashMap<Class<?>, IBushyTailController<?>>();
-    private Map<FullQualifiedName, Class<?>> entityTypeMap = new HashMap<FullQualifiedName, Class<?>>();
-    private List<CsdlSchema> odataSchemas = new ArrayList<CsdlSchema>();
+    private List<CsdlSchema> odataSchemas;
+    private Map<Class<?>, IBushyTailController<?>> entityControllerMap;
+    private Map<FullQualifiedName, Class<?>> entityTypeMap;
+
+    public BushyTail(List<CsdlSchema> odataSchemas, Map<Class<?>, IBushyTailController<?>> entityControllerMap, Map<FullQualifiedName, Class<?>> entityTypeMap) {
+        this.odataSchemas = odataSchemas;
+        this.entityControllerMap = entityControllerMap;
+        this.entityTypeMap = entityTypeMap;
+    }
 
     /**
      * Serve a request from a Servlet.
@@ -66,67 +72,6 @@ public class BushyTail {
         handler.register(new BushyTailEntityProcessor(entityTypeMap, entityControllerMap));
 
         handler.process(req, resp);
-    }
-
-    /**
-     * Add a JPA entity and associate it with a business controller.
-     * Determines the namespace and entity name automatically.
-     *
-     * @param <T> The class type of the JPA entity.
-     * @param entityClass The class type of the JPA entity.
-     * @param entityController The business controller which shall be associated to the JPA entity class to handle CRUDQ operations.
-     */
-    public <T> void addEntity(Class<T> entityClass, IBushyTailController<T> entityController) {
-        String namespace = ClassUtils.getPackageName(entityClass);
-        String entityName = entityClass.getSimpleName();
-
-        addEntity(entityClass, entityName, namespace, entityController);
-    }
-
-    /**
-     * Add a JPA entity and associate it with a business controller.
-     *
-     * @param <T> The class type of the JPA entity.
-     * @param entityClass The class type of the JPA entity.
-     * @param entityName The OData resource name for this entity class.
-     * @param namespace The namespace of this OData resource.
-     * @param entityController The business controller which shall be associated to the JPA entity class to handle CRUDQ operations.
-     */
-    public <T> void addEntity(Class<T> entityClass, String entityName, String namespace, IBushyTailController<T> entityController) {
-        FullQualifiedName entityFQN = new FullQualifiedName(namespace, entityName);
-
-        addEntity(entityClass, entityFQN, entityController);
-    }
-
-    /**
-     * Add a JPA entity and associate it with a business controller.
-     *
-     * @param <T> The class type of the JPA entity.
-     * @param entityClass The class type of the JPA entity.
-     * @param entityFQN The unique full qualified name of this Odata resource.
-     * @param entityController The business controller which shall be associated to the JPA entity class to handle CRUDQ operations.
-     */
-    public <T> void addEntity(Class<T> entityClass, FullQualifiedName entityFQN, IBushyTailController<T> entityController) {
-        entityControllerMap.put(entityClass, entityController);
-        entityTypeMap.put(entityFQN, entityClass);
-    }
-
-    /**
-     * Build the odata metadata and other internal helper classes from the previously added JPA entity types via {@link #addEntity(Class, IBushyTailController)}.
-     *
-     * This method makes heavy use of reflection. Thus it is advised to execute this method only once in the lifetime of the application.
-     */
-    public void build() {
-        OlingoMetadataFactory metadataFactory = new OlingoMetadataFactory();
-
-        for (Map.Entry<FullQualifiedName, Class<?>> entity : entityTypeMap.entrySet()) {
-            FullQualifiedName entityFQN = entity.getKey();
-            Class<?> entityType = entity.getValue();
-
-            metadataFactory.addEntity(entityFQN, entityType);
-        }
-
-        odataSchemas = metadataFactory.createSchema("");
     }
 
 }
