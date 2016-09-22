@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
 
-    Map<String, CsdlSchema> odataSchemas;
+    private final Map<String, CsdlSchema> odataSchemas;
 
     public BushyTailEdmProvider(Map<String, CsdlSchema> odataSchemas) {
         this.odataSchemas = odataSchemas;
