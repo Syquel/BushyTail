@@ -159,8 +159,9 @@ public class BushyTailEdmProvider extends CsdlAbstractEdmProvider {
 
     @Override
     public CsdlEntityContainer getEntityContainer() throws ODataException {
-        // TODO
-        return null;
+        CsdlSchema schema = getSchema("");
+
+        return schema.getEntityContainer();
     }
 
     @Override
