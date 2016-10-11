@@ -25,6 +25,7 @@ import org.apache.olingo.commons.api.edm.provider.*;
 import javax.persistence.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -180,7 +181,11 @@ public class OlingoMetadataFactory {
         // Loop over fields of current Entity Class
         final Field[] typeFields = type.getDeclaredFields();
         for (final Field typeField : typeFields) {
-            processProperty(typeField, properties, primaryKeyProperties, navigationProperties, navigationPropertyBindings);
+            try {
+                processProperty(typeField, properties, primaryKeyProperties, navigationProperties, navigationPropertyBindings);
+            } catch (OlingoMetadataFactoryException e) {
+                throw new OlingoMetadataFactoryException("Cannot process property '" + typeField.getName() + "' of class '" + type.getName() + "'", e);
+            }
         }
 
         // Build EntityType
@@ -348,7 +353,7 @@ public class OlingoMetadataFactory {
      * @param typeField The field of a JPA {@link Entity}.
      * @return The determined name of the partner-property.
      */
-    private static String getMappingPartner(final Field typeField) {
+    private static String getMappingPartner(final Field typeField) throws OlingoMetadataFactoryException {
         String mappingPartner = null;
 
         if (typeField.isAnnotationPresent(ManyToOne.class)) {
@@ -369,7 +374,34 @@ public class OlingoMetadataFactory {
             mappingPartner = mapping.mappedBy();
         } else if (typeField.isAnnotationPresent(ManyToMany.class)) {
             final ManyToMany mapping = typeField.getAnnotation(ManyToMany.class);
-            mappingPartner = mapping.mappedBy();
+
+            if (!mapping.mappedBy().isEmpty()) {
+                mappingPartner = mapping.mappedBy();
+            } else {
+                if (!Collection.class.isAssignableFrom(typeField.getType())) {
+                    throw new OlingoMetadataFactoryException("Field '" + typeField.getName() + "' has to be a Collection.");
+                }
+
+                final ParameterizedType genericFieldType = (ParameterizedType) typeField.getGenericType();
+
+                final Type[] actualFieldTypeArguments = genericFieldType.getActualTypeArguments();
+                if (actualFieldTypeArguments.length != 1) {
+                    throw new OlingoMetadataFactoryException("Field '" + typeField.getName() + " has to have exactly 1 generic type parameter. " + actualFieldTypeArguments.length + " found.");
+                }
+
+                final Class<?> fieldClass = (Class<?>) actualFieldTypeArguments[0];
+
+                final Field[] mappingFields = fieldClass.getFields();
+                for (final Field mappingField : mappingFields) {
+                    final ManyToMany mappingAnnotation = mappingField.getAnnotation(ManyToMany.class);
+
+                    if (mappingAnnotation != null && typeField.getName().equals(mappingAnnotation.mappedBy())) {
+                        mappingPartner = mappingField.getName();
+                        break;
+                    }
+                }
+            }
+
         }
 
         return mappingPartner;
