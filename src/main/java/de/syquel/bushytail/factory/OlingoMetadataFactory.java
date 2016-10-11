@@ -340,7 +340,7 @@ public class OlingoMetadataFactory {
     private static String getJPAEntityName(final Class<?> type) throws OlingoMetadataFactoryException {
         // Determine JPA Entity name
         final Table typeTable = type.getAnnotation(Table.class);
-        if (typeTable == null || typeTable.name() == null || typeTable.name().isEmpty()) {
+        if (typeTable == null || typeTable.name().isEmpty()) {
             throw new OlingoMetadataFactoryException("Could not determine EntitySet name: @Table annotation is missing! (" + type.getName() + ")");
         }
 
