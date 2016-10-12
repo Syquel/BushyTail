@@ -254,17 +254,22 @@ public class OlingoMetadataFactory {
 
         // Sync JPA Column attributes with OData property
         final Column columnAnnotation = typeField.getAnnotation(Column.class);
-        final Boolean isNullable = (columnAnnotation != null) && columnAnnotation.nullable();
+        final Boolean isNullable = columnAnnotation.nullable();
 
         // Determine Mapping Partner for Navigation Path
         final String mappingPartner = getMappingPartner(typeField);
         if (mappingPartner == null) {
             // Define property for entity
+            CsdlMapping dataTypeMapping = new CsdlMapping();
+            dataTypeMapping.setInternalName(propertyType.getName());
+            dataTypeMapping.setMappedJavaClass(propertyType);
+
             final CsdlProperty property = new CsdlProperty();
             property.setName(propertyName);
             property.setType(odataType);
             property.setCollection(isCollection);
             property.setNullable(isNullable);
+            property.setMapping(dataTypeMapping);
 
             properties.add(property);
         } else {
