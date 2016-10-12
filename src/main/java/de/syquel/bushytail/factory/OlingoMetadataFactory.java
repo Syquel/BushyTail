@@ -126,6 +126,8 @@ public class OlingoMetadataFactory {
      *
      * @see #addEntity(Class)
      * @see #addEntity(Iterable)
+     *
+     * @throws OlingoMetadataFactoryException if the schema could not be created.
      */
     public List<CsdlSchema> createSchema(final String name) throws OlingoMetadataFactoryException {
         final List<CsdlSchema> schemas = new ArrayList<CsdlSchema>(namespaceEntities.size());
@@ -171,6 +173,7 @@ public class OlingoMetadataFactory {
      * @param type The JPA {@link Entity}.
      * @param entityFQN The Full Qualified Name of the OData {@link CsdlEntitySet}.
      * @return The pair of generated OData {@link CsdlEntityType} and {@link CsdlEntitySet}.
+     * @throws OlingoMetadataFactoryException if Olingo entity could not be created.
      */
     private ODataEntityPair createEntity(final Class<?> type, final FullQualifiedName entityFQN) throws OlingoMetadataFactoryException {
         final List<CsdlProperty> properties = new ArrayList<CsdlProperty>();
@@ -216,6 +219,7 @@ public class OlingoMetadataFactory {
      *                             and can be used in {@link CsdlEntityType#setNavigationProperties(List)}.
      * @param navigationPropertyBindings A collection of OData navigation property bindings which will be filled by this function
      *                                   and can be used in {@link CsdlEntitySet#setNavigationPropertyBindings(List)}.
+     * @throws OlingoMetadataFactoryException if the JPA entity could not be determined for this field.
      */
     private void processProperty(final Field typeField, final Collection<CsdlProperty> properties, final Collection<CsdlPropertyRef> primaryKeyProperties,
                                  final Collection<CsdlNavigationProperty> navigationProperties, final Collection<CsdlNavigationPropertyBinding> navigationPropertyBindings) throws OlingoMetadataFactoryException {
@@ -352,6 +356,7 @@ public class OlingoMetadataFactory {
      *
      * @param typeField The field of a JPA {@link Entity}.
      * @return The determined name of the partner-property.
+     * @throws OlingoMetadataFactoryException if JPA information are incomplete.
      */
     private static String getMappingPartner(final Field typeField) throws OlingoMetadataFactoryException {
         String mappingPartner = null;
