@@ -356,10 +356,11 @@ public class OlingoMetadataFactory {
      *
      * @param typeField The field of a JPA {@link Entity}.
      * @return The determined name of the partner-property.
-     * @throws OlingoMetadataFactoryException if JPA information are incomplete.
+     * @throws OlingoMetadataFactoryException if Mapping Partner cannot be determined.
      */
     private static String getMappingPartner(final Field typeField) throws OlingoMetadataFactoryException {
         String mappingPartner = null;
+        Boolean isNotNavigation = false;
 
         if (typeField.isAnnotationPresent(ManyToOne.class)) {
             final Field[] mappingFields = typeField.getType().getDeclaredFields();
@@ -407,6 +408,12 @@ public class OlingoMetadataFactory {
                 }
             }
 
+        } else {
+            isNotNavigation = true;
+        }
+
+        if (!isNotNavigation && (mappingPartner == null || mappingPartner.isEmpty())) {
+            throw new OlingoMetadataFactoryException("Cannot determine mapping partner for Field '" + typeField.getName() + "'");
         }
 
         return mappingPartner;
