@@ -5,7 +5,7 @@
 
 ## Overview
 
-BushyTail is a Java 6 / JavaEE5-compatible facade for [Olingo](https://olingo.apache.org/) which provides functionality for accessing JPA entities.
+BushyTail is a Java 6 / JavaEE5-compatible facade for [Apache Olingo](https://olingo.apache.org/) which provides functionality for accessing JPA entities.
 
 ## Usage
 
