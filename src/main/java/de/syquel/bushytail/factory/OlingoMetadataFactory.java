@@ -360,7 +360,7 @@ public class OlingoMetadataFactory {
      */
     private static String getMappingPartner(final Field typeField) throws OlingoMetadataFactoryException {
         String mappingPartner = null;
-        Boolean isNotNavigation = false;
+        Boolean hasNavigation = true;
 
         if (typeField.isAnnotationPresent(ManyToOne.class)) {
             final Field[] mappingFields = typeField.getType().getDeclaredFields();
@@ -397,7 +397,7 @@ public class OlingoMetadataFactory {
 
                 final Class<?> fieldClass = (Class<?>) actualFieldTypeArguments[0];
 
-                final Field[] mappingFields = fieldClass.getFields();
+                final Field[] mappingFields = fieldClass.getDeclaredFields();
                 for (final Field mappingField : mappingFields) {
                     final ManyToMany mappingAnnotation = mappingField.getAnnotation(ManyToMany.class);
 
@@ -409,10 +409,10 @@ public class OlingoMetadataFactory {
             }
 
         } else {
-            isNotNavigation = true;
+            hasNavigation = false;
         }
 
-        if (!isNotNavigation && (mappingPartner == null || mappingPartner.isEmpty())) {
+        if (hasNavigation && (mappingPartner == null || mappingPartner.isEmpty())) {
             throw new OlingoMetadataFactoryException("Cannot determine mapping partner for Field '" + typeField.getName() + "'");
         }
 
