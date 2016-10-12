@@ -45,7 +45,7 @@ public final class OlingoDeserializer {
     }
 
     /**
-     * Convert an {@link Entity Olingo entity} to an {@link T object}.
+     * Convert an {@link Entity Olingo entity} to a JPA entity.
      * @param entityClass the class of the object
      * @param olingoEntity the olingo entity to convert
      * @param <T> the type of the object
