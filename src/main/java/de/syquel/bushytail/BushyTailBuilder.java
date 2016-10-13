@@ -37,7 +37,14 @@ import java.util.Map;
  */
 public class BushyTailBuilder {
 
+    /**
+     * Maps JPA {@link javax.persistence.Entity} with their corresponding CRUD business controller.
+     */
     private final Map<Class<?>, IBushyTailController<?>> entityControllerMap = new HashMap<Class<?>, IBushyTailController<?>>();
+
+    /**
+     * Maps OData {@link org.apache.olingo.commons.api.edm.provider.CsdlEntitySet} to JPA {@link javax.persistence.Entity}.
+     */
     private final Map<FullQualifiedName, Class<?>> entityTypeMap = new HashMap<FullQualifiedName, Class<?>>();
 
     /**
@@ -95,7 +102,7 @@ public class BushyTailBuilder {
             final FullQualifiedName entityFQN = entity.getKey();
             final Class<?> entityType = entity.getValue();
 
-            metadataFactory.addEntity(entityFQN, entityType);
+            metadataFactory.addEntity(entityType, entityFQN);
         }
 
         final List<CsdlSchema> odataSchemas;
