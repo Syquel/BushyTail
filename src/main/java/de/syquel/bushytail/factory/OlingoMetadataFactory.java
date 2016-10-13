@@ -97,18 +97,46 @@ public class OlingoMetadataFactory {
 
         FullQualifiedName entityFQN = new FullQualifiedName(namespace, entityName);
 
-        addEntity(entityFQN, type);
+        addEntity(type, entityFQN);
     }
 
+    /**
+     * Adds a JPA {@link Entity} with their namespace to the factory context and
+     * queues it for further processing.
+     * The name of the entity is automatically calculated.
+     *
+     * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     * @param namespace The namespace of the OData entity.
+     */
+    public void addEntity(final Class<?> type, final String namespace) {
+        String entityName = type.getSimpleName();
+
+        addEntity(type, namespace, entityName);
+    }
+
+    /**
+     * Adds a JPA {@link Entity} with their namespace to the factory context and
+     * queues it for further processing.
+     * The name of the entity is automatically calculated.
+     *
+     * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     * @param namespace The namespace of the OData entity.
+     * @param name The name of the OData entity.
+     */
+    public void addEntity(final Class<?> type, final String namespace, final String name) {
+        FullQualifiedName entityFQN = new FullQualifiedName(namespace, name);
+
+        addEntity(type, entityFQN);
+    }
 
     /**
      * Adds a JPA {@link Entity} with their namespace to the factory context and
      * queues it for further processing.
      *
-     * @param entityFQN The Full Qualified Name of the OData entity.
      * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     * @param entityFQN The Full Qualified Name of the OData entity.
      */
-    public void addEntity(final FullQualifiedName entityFQN, final Class<?> type) {
+    public void addEntity(final Class<?> type, final FullQualifiedName entityFQN) {
         Map<Class<?>, FullQualifiedName> entities = namespaceEntities.get(entityFQN.getNamespace());
         if (entities == null) {
             entities = new HashMap<Class<?>, FullQualifiedName>();
@@ -254,7 +282,7 @@ public class OlingoMetadataFactory {
 
         // Sync JPA Column attributes with OData property
         final Column columnAnnotation = typeField.getAnnotation(Column.class);
-        final Boolean isNullable = columnAnnotation.nullable();
+        final Boolean isNullable = columnAnnotation == null || columnAnnotation.nullable();
 
         // Determine Mapping Partner for Navigation Path
         final String mappingPartner = getMappingPartner(typeField);
@@ -326,9 +354,9 @@ public class OlingoMetadataFactory {
 
                     if (entityFQN != null) {
                         odataType = entityFQN;
-                    }
 
-                    break;
+                        break;
+                    }
                 }
             }
 
