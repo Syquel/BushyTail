@@ -77,11 +77,14 @@ public class OlingoMetadataFactory {
      * queues it for further processing.
      *
      * @param types A collection of JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     * @return this {@link OlingoMetadataFactory} for method chaining.
      */
-    public void addEntity(final Iterable<Class<?>> types) {
+    public OlingoMetadataFactory addEntity(final Iterable<Class<?>> types) {
         for (final Class<?> type : types) {
             addEntity(type);
         }
+
+        return this;
     }
 
     /**
@@ -90,14 +93,17 @@ public class OlingoMetadataFactory {
      * The namespace and name of the entity are automatically calculated.
      *
      * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
+     * @return this {@link OlingoMetadataFactory} for method chaining.
      */
-    public void addEntity(final Class<?> type) {
+    public OlingoMetadataFactory addEntity(final Class<?> type) {
         String namespace = ClassUtils.getPackageName(type);
         String entityName = type.getSimpleName();
 
         FullQualifiedName entityFQN = new FullQualifiedName(namespace, entityName);
 
         addEntity(type, entityFQN);
+
+        return this;
     }
 
     /**
@@ -107,11 +113,14 @@ public class OlingoMetadataFactory {
      *
      * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
      * @param namespace The namespace of the OData entity.
+     * @return this {@link OlingoMetadataFactory} for method chaining.
      */
-    public void addEntity(final Class<?> type, final String namespace) {
+    public OlingoMetadataFactory addEntity(final Class<?> type, final String namespace) {
         String entityName = type.getSimpleName();
 
         addEntity(type, namespace, entityName);
+
+        return this;
     }
 
     /**
@@ -122,11 +131,14 @@ public class OlingoMetadataFactory {
      * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
      * @param namespace The namespace of the OData entity.
      * @param name The name of the OData entity.
+     * @return this {@link OlingoMetadataFactory} for method chaining.
      */
-    public void addEntity(final Class<?> type, final String namespace, final String name) {
+    public OlingoMetadataFactory addEntity(final Class<?> type, final String namespace, final String name) {
         FullQualifiedName entityFQN = new FullQualifiedName(namespace, name);
 
         addEntity(type, entityFQN);
+
+        return this;
     }
 
     /**
@@ -135,8 +147,9 @@ public class OlingoMetadataFactory {
      *
      * @param type A JPA {@link Entity} which shall be included in the OData {@link CsdlSchema}.
      * @param entityFQN The Full Qualified Name of the OData entity.
+     * @return this {@link OlingoMetadataFactory} for method chaining.
      */
-    public void addEntity(final Class<?> type, final FullQualifiedName entityFQN) {
+    public OlingoMetadataFactory addEntity(final Class<?> type, final FullQualifiedName entityFQN) {
         Map<Class<?>, FullQualifiedName> entities = namespaceEntities.get(entityFQN.getNamespace());
         if (entities == null) {
             entities = new HashMap<Class<?>, FullQualifiedName>();
@@ -144,6 +157,8 @@ public class OlingoMetadataFactory {
         }
 
         entities.put(type, entityFQN);
+
+        return this;
     }
 
     /**
