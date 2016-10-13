@@ -35,8 +35,20 @@
     <groupId>de.syquel</groupId>
     <artifactId>bushytail</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>BushyTail</name>
+    <description>BushyTail is a Java 6 / JavaEE5-compatible facade for Apache Olingo which provides functionality for accessing JPA entities</description>
+    <url>https://github.com/Syquel/BushyTail</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
+    <inceptionYear>2016</inceptionYear>
 
     <developers>
         <developer>
@@ -51,9 +63,9 @@
         </developer>
     </developers>
 
-    <inceptionYear>2016</inceptionYear>
-
     <scm>
+        <connection>scm:git:git://github.com/Syquel/BushyTail.git</connection>
+        <developerConnection>scm:git:ssh://github.com:Syquel/BushyTail.git</developerConnection>
         <url>https://github.com/Syquel/BushyTail</url>
     </scm>
 
@@ -62,17 +74,21 @@
         <system>Travis CI</system>
     </ciManagement>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
-
     <issueManagement>
         <system>GitHub Issues</system>
         <url>https://github.com/Syquel/BushyTail/issues</url>
     </issueManagement>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -170,7 +186,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>jar-no-fork</goal>
                         </goals>
                     </execution>
                 </executions>
