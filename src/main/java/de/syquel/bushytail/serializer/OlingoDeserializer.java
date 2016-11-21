@@ -65,7 +65,7 @@ public final class OlingoDeserializer {
             try {
                 final Method propertyAccessor = PropertyUtils.getPropertyDescriptor(entity, property.getName()).getWriteMethod();
 
-                propertyAccessor.invoke(entity, property);
+                propertyAccessor.invoke(entity, property.getValue());
             } catch (Exception e) {
                 logger.error("Cannot set property '" + property.getName() + "' of class '" + entityClass.getName() + "'", e);
                 throw new OlingoDeserializerException("Cannot set property '" + property.getName() + "' of class '" + entityClass.getName() + "'", e);
